@@ -1,0 +1,57 @@
+output_root: "outputs"
+output_version: "baseline"
+backup_name: "weights"
+log_name: "logs"
+
+#labels: ["aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
+labels: ["bulk cargo carrier","container ship", "fishing boat", "general cargo ship", "ore carrier", "passenger ship"]
+data_root_dir: "F:/pycharm/YOLOv2_ship_pytorch_improved/data/Seaships_7000/VOCdevkit/onedet_cache"
+
+train:
+    dataset: "train"
+    stdout: True   #False
+    gpus: "0"  #2
+    nworkers: 0     #16
+    pin_mem: True
+
+    momentum: 0.9
+    decay: 0.0005
+
+    clear: False
+
+    warmup_lr: 0.0001
+    lr_steps: [400,700, 900, 1000, 15000, 27125] #[400,15000,27125]
+    lr_rates: [0.0001,0.0005,0.0005,0.001, 0.0001,0.00001]  #[0.0001,0.00001,0.00001]
+    max_batches: 27300   #70200  30275
+    resize_interval: 10
+
+    backup_interval: 88  #178
+    backup_steps: [880, 27125]  #[1000, 60000]
+    backup_rates: [440, 88]   # [10000, 175]
+
+    input_shape: [416, 416]
+    batch_size: 64   #64
+    mini_batch_size: 16  #16
+    weights: "weights/darknet19_448.conv.23"
+
+test:
+    dataset: "test"
+    stdout: True
+    gpus: "0"  #3
+    nworkers: 0 #8
+    pin_mem: True
+
+    input_shape: [480, 480]    #[544, 544]  [480, 480] [416, 416]
+    batch_size: 64  #
+    weights: "weights/weights_17160.pt"     #"weights/yolov2_60200.dw"  weights_30100.pt   final.dw
+
+    conf_thresh: 0.01  #0.005   0.01
+    nms_thresh: 0.45   #0.45    0.5
+
+    results: "results"
+
+speed:
+    gpus: "0"   #7
+    batch_size: 1
+    max_iters: 200
+    input_shape: [416, 416]  # [544, 544]
